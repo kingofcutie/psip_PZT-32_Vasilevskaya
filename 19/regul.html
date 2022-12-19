@@ -1,0 +1,59 @@
+<html>
+
+<head>
+    <script>
+        function validate(form_id, email) {
+            var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+            var address = document.forms[form_id].elements[email].value;
+            if (reg.test(address) == false) {
+                alert("Введите корректный e-mail");
+                return false;
+            }
+        }
+
+        function execf(){ //ищет совпадение символов
+            var myRe = /аб*/g;
+            var str = 'аббвгдеабж';
+            var myArray;
+            while ((myArray = myRe.exec(str)) !== null) {
+                var msg = 'Найдено ' + myArray[0] + '. ';
+                msg += 'Следующее сопоставление начнётся с позиции ' + myRe.lastIndex;
+                alert(msg);
+            }
+        }
+
+        function matchf(){ //ищет все цифры и вырезает
+            const re = /[0-9]+/g;
+            const str = "2016-01-02";
+            const result = re[Symbol.match](str);
+            alert(result);
+        }
+
+        function replacef(){ //меняет символ на точку
+            const re = /-/g;
+            const str = "2016-01-01";
+            const newstr = re[Symbol.replace](str, ".");
+            alert(newstr);
+        }
+
+        function searchf(){ //когда найдёт символ то возвращает его позицию
+            const re = /-/g;
+            const str = "2016-01-01";
+            const result = re[Symbol.search](str);
+            alert(result);
+        }
+    </script>
+</head>
+
+<body>
+    <form id="form_id" method="post" action="" onsubmit="return validate('form_id','email');">
+        <input type="text" id="email" name="email" />
+        <input type="submit" value="Submit" />
+    </form>
+    <button onclick="execf()">Проверка работы exec()</button>
+    <button onclick="matchf()">Проверка работы match()</button>
+    <button onclick="replacef()">Проверка работы replace()</button>
+    <button onclick="searchf()">Проверка работы search()</button>
+</body>
+
+</html>
