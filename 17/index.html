@@ -1,0 +1,316 @@
+<!doctype html>
+
+<html lang="ru">
+
+<head>
+  <meta charset="utf-8">
+</head>
+
+<body>
+    <button>Нажми сюда</button>
+
+    <script>
+      var button = document.querySelector("button");
+      button.addEventListener("mousedown", function(event) {
+        if (event.which == 1)
+          alert("Левая");
+        else if (event.which == 2)
+          alert("Средняя");
+        else if (event.which == 3)
+          alert("Правая");
+      });
+    </script>
+
+    <p>Страница по нажатию V офиолетивает.</p>
+    <script>
+        addEventListener("keydown", function(event) {
+        if (event.keyCode == 86)
+            document.body.style.background = "violet";
+        });
+        addEventListener("keyup", function(event) {
+        if (event.keyCode == 86)
+            document.body.style.background = "";
+        });
+    </script>
+
+    <style>
+        body {
+        height: 200px;
+        background: beige;
+        }
+        .dot {
+        height: 8px; width: 8px;
+        border-radius: 4px; /* скруглённые углы */
+        background: blue;
+        position: absolute;
+        }
+    </style>
+
+    <script>
+        addEventListener("click", function(event) {
+        var dot = document.createElement("div");
+        dot.className = "dot";
+        dot.style.left = (event.pageX - 4) + "px";
+        dot.style.top = (event.pageY - 4) + "px";
+        document.body.appendChild(dot);
+        });
+    </script>
+
+    <p>Переместите мышь для увеличения ширины:</p>
+    <div style="background: orange; width: 60px; height: 20px"></div>
+
+    <script>
+        var lastX; // Последняя позиция мыши
+        var rect = document.querySelector("div");
+        rect.addEventListener("mousedown", function(event) {
+        if (event.which == 1) {
+            lastX = event.pageX;
+            addEventListener("mousemove", moved);
+            event.preventDefault(); // Запретим выделение
+        }
+        });
+
+        function moved(event) {
+            if (event.which != 1) {
+                removeEventListener("mousemove", moved);
+            } else {
+                var dist = event.pageX - lastX;
+                var newWidth = Math.max(10, rect.offsetWidth + dist);
+                rect.style.width = newWidth + "px";
+                lastX = event.pageX;
+            }
+        }
+    </script>
+
+    <style>
+        .progress {
+            border: 1px solid blue;
+            width: 100px;
+            position: fixed;
+            top: 10px; right: 10px;
+        }
+        .progress > div {
+            height: 12px;
+            background: blue;
+            width: 0%;
+        }
+        body {
+            height: 2000px;
+        }
+    </style>
+
+    <div class="progress"><div></div></div>
+
+    <script>
+        var bar = document.querySelector(".progress div");
+        addEventListener("scroll", function() {
+            var max = document.body.scrollHeight - innerHeight;
+            var percent = (pageYOffset / max) * 100;
+            bar.style.width = percent + "%";
+        });
+    </script>
+
+    <p>Имя: <input type="text" data-help="Ваше полное имя"></p>
+    <p>Возраст: <input type="text" data-help="Возраст в годах"></p>
+    <p id="help"></p>
+
+    <script>
+        var help = document.querySelector("#help");
+        var fields = document.querySelectorAll("input");
+        for (var i = 0; i < fields.length; i++) {
+            fields[i].addEventListener("focus", function(event) {
+            var text = event.target.getAttribute("data-help");
+            help.textContent = text;
+        });
+        fields[i].addEventListener("blur", function(event) {
+        help.textContent = "";
+        });
+    }
+    </script>
+
+    <div class="container">
+        <div class="box">
+            <div class="item" draggable="true"></div>
+        </div>
+        <div class="box"></div>
+        <div class="box"></div>
+    </div>
+
+    <style>
+        .container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Стили для боксов */
+        .box {
+            width: 150px;
+            height: 150px;
+            background-color: #eee;
+            margin-right: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .box:last-child {
+            margin-right: 0;
+        }
+
+        /* Стили для перемещаемого элемента */
+        .item {
+            width: 100px;
+            height: 100px;
+            background-color: blue;
+            cursor: pointer;
+        }
+
+        /* Меняем курсор при перетаскивании */
+        .item:active {
+            cursor: grabbing;
+        }
+
+        /* При перетаскивания - меняем цвет */
+        .item--hold {
+            background-color: blueviolet;
+        }
+
+        /* При наведении на бокс - желтая подсветка */
+        .box--hovered {
+            background-color: rgba(255, 255, 0, 0.2);
+        }
+
+        /* Перетаскивании - скрываем элемент */
+        .item--hide {
+            display: none;
+        }
+    </style>
+
+    <script>
+        const item = document.querySelector(".item");
+        const boxes = Array.from(document.querySelectorAll(".box"));
+
+        item.addEventListener("dragstart", dragstart);
+        item.addEventListener("dragend", dragend);
+
+        boxes.forEach((box) => {
+            // Когда заходим элементом в бокс
+            box.addEventListener("dragover", dragover);
+            // Когда отпускаем элемент на нужном боксе
+            box.addEventListener("drop", drop);
+            // Когда достигаем бокс
+            box.addEventListener("dragenter", dragenter);
+            // Когда покидаем бокс
+            box.addEventListener("dragleave", dragleave);
+        });
+
+        // Функция начала перетаскивания элемента
+        function dragstart(e) {
+            // Меняем цвет на фиолетовый
+            e.target.classList.add("item--hold");
+            // Удаляем элемент из бокса
+            setTimeout(() => e.target.classList.add("item--hide"), 0);
+        }
+
+        function dragend(e) {
+            // Меняем цвет на синий
+            e.target.classList.remove("item--hold");
+            // Возвращаем элемент обратно
+            e.target.classList.remove("item--hide");
+        }
+
+        function dragover(e) {
+            e.preventDefault();
+        }
+
+        function drop(e) {
+            // Добавляем наш элемент в нужный бокс
+            e.target.append(item);
+            // Убираем желтую подсветку
+            e.target.classList.remove("box--hovered");
+        }
+
+        function dragenter(e) {
+            // Добавляем желтую подсветку
+            e.target.classList.add("box--hovered");
+        }
+
+        function dragleave(e) {
+            // Убираем желтую подсветку
+            e.target.classList.remove("box--hovered");
+        }
+    </script>
+
+    <canvas id="canvas" width="600" height="600" style="border:solid black 1px;">
+        .
+    </canvas>
+    
+
+    <script>
+
+        function startup() {
+            var el = document.getElementById("canvas");
+            el.addEventListener("touchstart", handleStart, false);
+            el.addEventListener("touchend", handleEnd, false);
+            el.addEventListener("touchcancel", handleCancel, false);
+            el.addEventListener("touchmove", handleMove, false);
+        }
+
+        var ongoingTouches = [];
+
+        function handleStart(evt) {
+            evt.preventDefault();
+            console.log("touchstart.");
+            var el = document.getElementById("canvas");
+            var ctx = el.getContext("2d");
+            var touches = evt.changedTouches;
+
+            for (var i = 0; i < touches.length; i++) {
+                console.log("touchstart:" + i + "...");
+                ongoingTouches.push(copyTouch(touches[i]));
+                var color = colorForTouch(touches[i]);
+                ctx.beginPath();
+                ctx.arc(touches[i].pageX, touches[i].pageY, 4, 0, 2 * Math.PI, false);  // a circle at the start
+                ctx.fillStyle = color;
+                ctx.fill();
+                console.log("touchstart:" + i + ".");
+            }
+        }
+
+        function handleMove(evt) {
+            evt.preventDefault();
+            var el = document.getElementById("canvas");
+            var ctx = el.getContext("2d");
+            var touches = evt.changedTouches;
+
+            for (var i = 0; i < touches.length; i++) {
+                var color = colorForTouch(touches[i]);
+                var idx = ongoingTouchIndexById(touches[i].identifier);
+
+                if (idx >= 0) {
+                    console.log("continuing touch "+idx);
+                    ctx.beginPath();
+                    console.log("ctx.moveTo(" + ongoingTouches[idx].pageX + ", " + ongoingTouches[idx].pageY + ");");
+                    ctx.moveTo(ongoingTouches[idx].pageX, ongoingTouches[idx].pageY);
+                    console.log("ctx.lineTo(" + touches[i].pageX + ", " + touches[i].pageY + ");");
+                    ctx.lineTo(touches[i].pageX, touches[i].pageY);
+                    ctx.lineWidth = 4;
+                    ctx.strokeStyle = color;
+                    ctx.stroke();
+
+                    ongoingTouches.splice(idx, 1, copyTouch(touches[i]));  // swap in the new touch record
+                    console.log(".");
+                } else {
+                    console.log("can't figure out which touch to continue");
+                }
+            }
+        }
+
+    </script>
+
+</body>
+
+</html>
